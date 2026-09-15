@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
+import { IconChevronRight } from "@tabler/icons-react";
 
 type Crumb = { label: string; path: string };
 
@@ -11,20 +11,24 @@ type BreadcrumbsProps = {
 
 export function DriveBreadcrumbs({ crumbs, onNavigate }: BreadcrumbsProps) {
   return (
-    <nav className="flex min-w-0 items-center text-[14px]">
+    <nav className="flex min-w-0 items-center text-[12px]">
       {crumbs.map((crumb, index) => {
         const last = index === crumbs.length - 1;
         return (
           <span key={crumb.path + index} className="flex min-w-0 items-center">
             {index > 0 && (
-              <ChevronRight className="mx-0.5 size-3.5 shrink-0 text-[#6f6f6f]" strokeWidth={1.5} />
+              <IconChevronRight
+                size={12}
+                stroke={1.75}
+                className="text-muted-foreground mx-0.5 shrink-0"
+              />
             )}
             <button
               type="button"
               onClick={() => onNavigate(crumb.path)}
-              className={`truncate rounded-full px-2.5 py-1 hover:bg-[#1a1a1a] ${
-                last ? "font-medium text-white" : "text-[#9a9a9a]"
-              }`}
+              className={`ks-transition hover:bg-accent truncate px-1.5 py-0.5 ${
+                last ? "text-foreground font-medium" : "text-muted-foreground"
+              } ${last ? "font-mono" : ""}`}
             >
               {crumb.label}
             </button>

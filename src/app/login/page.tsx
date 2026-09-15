@@ -21,48 +21,44 @@ export default async function LoginPage({
   const message = error ? (ERRORS[error] ?? "Could not sign you in. Try again.") : null;
 
   return (
-    <div className="grid min-h-dvh place-items-center bg-[#0a0a0a] px-6">
-      <div className="w-full max-w-sm">
-        <div className="flex flex-col gap-0.5">
-          <div className="flex items-center gap-2.5">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/liwip-logo.png" alt="" className="size-8 object-contain" />
-            <span className="text-[22px] leading-none font-extrabold tracking-tight text-[#f3ece4]">
-              Liwip
-            </span>
-          </div>
-          <p className="pl-[42px] text-[9px] font-medium tracking-[0.28em] text-[#c4b4a4] uppercase">
-            Live With Pride.
-          </p>
+    <div className="bg-background grid min-h-dvh place-items-center px-6">
+      <div className="w-full max-w-96">
+        <div className="flex items-center gap-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/liwip-logo.png" alt="" className="size-5 object-contain" />
+          <span className="text-[14px] font-medium tracking-tight">Liwip</span>
+          <span className="text-muted-foreground ml-auto text-[10px] tracking-[0.18em] uppercase">
+            SKU
+          </span>
         </div>
 
-        <div className="mt-8 rounded-3xl bg-[#141414] p-7 ring-1 ring-[#2a2a2a]">
-          <h1 className="text-[18px] font-medium tracking-tight text-white">
+        <div className="bg-card ring-foreground/10 mt-4 p-4 ring-1">
+          <h1 className="text-[14px] font-medium tracking-tight">
             {MASTER_FOLDER_NAME}
           </h1>
-          <p className="mt-1.5 text-[13px] leading-6 text-[#9a9a9a]">
+          <p className="text-muted-foreground mt-1 text-[12px] leading-5">
             We will email you a six digit code to open the image library.
           </p>
 
           {message && (
-            <div className="mt-5 rounded-2xl bg-[#2a1212] px-4 py-2.5 text-[13px] leading-6 text-[#f0b4b4]">
+            <div className="border-destructive/30 bg-destructive/10 text-destructive mt-3 border px-3 py-2 text-[12px] leading-5">
               {message}
             </div>
           )}
 
           {!accessConfigured && (
-            <div className="mt-5 rounded-2xl bg-[#2a1212] px-4 py-2.5 text-[13px] leading-6 text-[#f0b4b4]">
+            <div className="border-destructive/30 bg-destructive/10 text-destructive mt-3 border px-3 py-2 text-[12px] leading-5">
               No access list is configured, so nobody can sign in. Set
               AUTH_ALLOWED_EMAILS or AUTH_ALLOWED_DOMAINS on the server.
             </div>
           )}
 
-          <div className="mt-6">
+          <div className="mt-4">
             <LoginForm callbackUrl={callbackUrl || "/"} />
           </div>
         </div>
 
-        <p className="mt-5 px-1 text-[12px] leading-5 text-[#6f6f6f]">
+        <p className="text-muted-foreground mt-3 text-[12px]">
           Access is limited to approved Liwip accounts.
         </p>
       </div>

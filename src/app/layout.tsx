@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
 import "./globals.css";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-sans",
-});
+import { ThemeProvider, themeInitScript } from "@/components/theme/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "Liwip · SKU Images",
-  description: "SKU image library for Liwip. Local storage first, S3 next.",
+  description: "SKU image library for Liwip.",
   icons: {
     icon: "/liwip-logo.png",
   },
@@ -18,8 +12,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${poppins.variable} ${poppins.className} h-full antialiased`}>
-      <body className="min-h-full bg-[#0a0a0a] text-[#f4f4f4]">{children}</body>
+    <html lang="en" className="h-full" suppressHydrationWarning>
+      <head>
+        {/* Runs before paint so a stored dark preference never flashes light. */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className="min-h-full">
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
     </html>
   );
 }

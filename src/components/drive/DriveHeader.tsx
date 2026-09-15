@@ -1,7 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Grid2x2, List as ListIcon, Search } from "lucide-react";
+import { useEffect, useRef, type ReactNode } from "react";
+import {
+  IconLayoutGrid,
+  IconList,
+  IconMoon,
+  IconSearch,
+  IconSun,
+} from "@tabler/icons-react";
+import { useTheme } from "@/components/theme/ThemeProvider";
 
 type HeaderProps = {
   masterLabel: string;
@@ -18,8 +25,8 @@ export function DriveHeader({
   view,
   onViewChange,
 }: HeaderProps) {
-  const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { resolved, toggle } = useTheme();
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
@@ -33,51 +40,43 @@ export function DriveHeader({
   }, []);
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between gap-4 px-7">
-      <div>
-        <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#6f6f6f]">
-          Product media
-        </p>
-        <h1 className="mt-0.5 text-[17px] font-medium tracking-tight text-white">
-          {masterLabel}
-        </h1>
-      </div>
+    <header className="border-border bg-background sticky top-0 z-20 flex h-14 shrink-0 items-center justify-between gap-4 border-b px-6">
+      <h1 className="text-[14px] font-medium tracking-tight">{masterLabel}</h1>
 
       <div className="flex items-center gap-2">
-        <div
-          className={`flex h-10 w-[300px] items-center gap-2.5 rounded-full px-4 ring-1 transition-[box-shadow,background-color] duration-300 ${
-            focused
-              ? "bg-[#141414] ring-[#0e7a5c]/60 shadow-[0_0_0_4px_rgba(14,122,92,0.15)]"
-              : "bg-[#111111] ring-[#2a2a2a]"
-          }`}
-        >
-          <Search className="size-4 shrink-0 text-[#8a8a8a]" strokeWidth={1.5} />
+        <div className="border-input focus-within:ring-ring/50 ks-transition flex h-8 w-[280px] items-center gap-2 border px-2 focus-within:ring-1">
+          <IconSearch size={14} stroke={1.75} className="text-muted-foreground shrink-0" />
           <input
             ref={inputRef}
             value={query}
             onChange={(event) => onQueryChange(event.target.value)}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
             placeholder="Search SKUs or files"
-            className="h-full w-full bg-transparent text-[13px] text-[#f4f4f4] outline-none placeholder:text-[#6f6f6f]"
+            className="placeholder:text-muted-foreground h-full w-full bg-transparent text-[12px] outline-none"
           />
         </div>
-        <div className="flex h-10 items-center gap-1 rounded-full bg-[#111111] p-1 ring-1 ring-[#2a2a2a]">
-          <ViewSegment
-            label="List view"
-            active={view === "list"}
-            onClick={() => onViewChange("list")}
-          >
-            <ListIcon className="size-4" strokeWidth={1.5} />
+
+        <div className="border-input flex h-8 items-center border">
+          <ViewSegment label="List view" active={view === "list"} onClick={() => onViewChange("list")}>
+            <IconList size={14} stroke={1.75} />
           </ViewSegment>
-          <ViewSegment
-            label="Grid view"
-            active={view === "grid"}
-            onClick={() => onViewChange("grid")}
-          >
-            <Grid2x2 className="size-4" strokeWidth={1.5} />
+          <ViewSegment label="Grid view" active={view === "grid"} onClick={() => onViewChange("grid")}>
+            <IconLayoutGrid size={14} stroke={1.75} />
           </ViewSegment>
         </div>
+
+        <button
+          type="button"
+          title="Toggle theme (d)"
+          aria-label="Toggle theme"
+          onClick={toggle}
+          className="border-input text-muted-foreground hover:text-foreground hover:bg-accent grid size-8 place-items-center border transition-transform duration-300"
+        >
+          {resolved === "dark" ? (
+            <IconSun size={14} stroke={1.75} />
+          ) : (
+            <IconMoon size={14} stroke={1.75} />
+          )}
+        </button>
       </div>
     </header>
   );
@@ -101,10 +100,10 @@ function ViewSegment({
       aria-label={label}
       aria-pressed={active}
       onClick={onClick}
-      className={`grid h-8 w-9 place-items-center rounded-full ${
+      className={`ks-transition grid h-full w-8 place-items-center ${
         active
-          ? "bg-[#0e7a5c] text-white"
-          : "text-[#9a9a9a] hover:bg-[#1a1a1a] hover:text-white"
+          ? "bg-primary text-primary-foreground"
+          : "text-muted-foreground hover:text-foreground hover:bg-accent"
       }`}
     >
       {children}

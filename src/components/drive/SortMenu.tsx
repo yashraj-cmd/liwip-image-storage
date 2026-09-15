@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowDownUp, Check } from "lucide-react";
+import { IconArrowsSort, IconCheck } from "@tabler/icons-react";
 import {
   SORT_KEYS,
   directionLabels,
@@ -10,8 +10,8 @@ import {
   type SortState,
 } from "./sorting";
 
-const MENU_WIDTH = 232;
-const MENU_HEIGHT = 346;
+const MENU_WIDTH = 216;
+const MENU_HEIGHT = 330;
 
 export function SortMenu({
   sort,
@@ -37,7 +37,7 @@ export function SortMenu({
     const top =
       window.innerHeight - rect.bottom < MENU_HEIGHT + 8
         ? Math.max(8, rect.top - MENU_HEIGHT - 4)
-        : rect.bottom + 6;
+        : rect.bottom + 4;
     const left = Math.min(
       Math.max(8, rect.right - MENU_WIDTH),
       window.innerWidth - MENU_WIDTH - 8,
@@ -74,13 +74,13 @@ export function SortMenu({
         type="button"
         title="Sort"
         onClick={toggle}
-        className={`inline-flex h-10 items-center gap-2 rounded-full px-4 text-[13px] font-medium whitespace-nowrap ${
+        className={`ks-transition inline-flex h-8 items-center gap-1.5 px-2 text-[12px] font-medium whitespace-nowrap ${
           open
-            ? "bg-[#0e7a5c]/20 text-[#cde8df]"
-            : "text-[#cfcfcf] hover:bg-[#1a1a1a] hover:text-white"
+            ? "bg-accent text-accent-foreground"
+            : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
         }`}
       >
-        <ArrowDownUp className="size-4" strokeWidth={1.5} />
+        <IconArrowsSort size={14} stroke={1.75} />
         Sort
       </button>
 
@@ -89,7 +89,7 @@ export function SortMenu({
           <div
             ref={menuRef}
             style={{ top: position.top, left: position.left, width: MENU_WIDTH }}
-            className="fixed z-50 overflow-hidden rounded-2xl bg-[#161616] py-1 ring-1 ring-[#2a2a2a] shadow-xl"
+            className="bg-popover/95 ring-foreground/10 fixed z-50 p-1 shadow-md ring-1 backdrop-blur-md"
           >
             <Heading>Sort by</Heading>
             {SORT_KEYS.map((entry) => (
@@ -137,14 +137,14 @@ export function SortMenu({
 
 function Heading({ children }: { children: React.ReactNode }) {
   return (
-    <p className="px-3.5 pt-2.5 pb-1.5 text-[10px] font-medium tracking-[0.16em] text-[#6f6f6f] uppercase">
+    <p className="text-muted-foreground px-2 pt-2 pb-1 text-[10px] font-medium tracking-[0.18em] uppercase">
       {children}
     </p>
   );
 }
 
 function Divider() {
-  return <div className="my-1 border-t border-[#2a2a2a]" />;
+  return <div className="border-border my-1 border-t" />;
 }
 
 function Row({
@@ -162,12 +162,12 @@ function Row({
       role="menuitemradio"
       aria-checked={checked}
       onClick={onClick}
-      className={`flex w-full items-center gap-2.5 px-3.5 py-2 text-left text-[13px] hover:bg-[#1a1a1a] ${
-        checked ? "text-white" : "text-[#cfcfcf]"
+      className={`ks-transition hover:bg-accent hover:text-accent-foreground flex h-7 w-full items-center gap-2 px-2 text-left text-[12px] ${
+        checked ? "text-foreground font-medium" : "text-muted-foreground"
       }`}
     >
-      <span className="grid size-4 shrink-0 place-items-center">
-        {checked && <Check className="size-3.5 text-[#0e7a5c]" strokeWidth={2.5} />}
+      <span className="grid size-3.5 shrink-0 place-items-center">
+        {checked && <IconCheck size={12} stroke={2.25} className="text-primary" />}
       </span>
       {children}
     </button>

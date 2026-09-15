@@ -2,17 +2,17 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  CheckSquare,
-  Folder,
-  FolderInput,
-  FolderPlus,
-  Images,
-  ImagePlus,
-  Loader2,
-  Square,
-  Trash2,
-  X,
-} from "lucide-react";
+  IconFolder,
+  IconFolderPlus,
+  IconFolderSymlink,
+  IconLoader2,
+  IconPhoto,
+  IconPhotoPlus,
+  IconSquare,
+  IconSquareCheck,
+  IconTrash,
+  IconX,
+} from "@tabler/icons-react";
 import { DriveBreadcrumbs } from "./DriveBreadcrumbs";
 import { DriveHeader } from "./DriveHeader";
 import { DriveSidebar } from "./DriveSidebar";
@@ -287,8 +287,13 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
   }
 
   function toggleSelect(item: DriveItem, additive: boolean) {
+    // Once checkboxes are showing, a plain click toggles that one item. Without
+    // this, clicking a card after "Select all" would throw the whole selection
+    // away and keep only the card just clicked.
+    const toggling = additive || selectionMode;
+
     setSelectedPaths((current) => {
-      if (additive) {
+      if (toggling) {
         return current.includes(item.path)
           ? current.filter((path) => path !== item.path)
           : [...current, item.path];
@@ -492,7 +497,7 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
   }
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-[#0a0a0a] text-[#f4f4f4]">
+    <div className="bg-background text-foreground flex h-dvh overflow-hidden">
       <DriveSidebar
           masterLabel={masterLabel}
           user={user}
@@ -525,13 +530,13 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
           />
 
         <main className="relative min-h-0 flex-1 overflow-hidden">
-          <div className="flex items-center justify-between gap-4 px-7 pb-5">
+          <div className="flex items-center justify-between gap-4 px-6 pt-4 pb-4">
             <div className="min-w-0">
               {!atMaster && (
                 <DriveBreadcrumbs crumbs={crumbs} onNavigate={setCurrentPath} />
               )}
               <div
-                className={`${atMaster ? "" : "px-2.5 pt-1"} flex min-h-12 min-w-0 items-center gap-1.5`}
+                className="flex min-h-8 min-w-0 items-center gap-1.5"
               >
                 {selectedPaths.length > 0 && (
                   <button
@@ -539,12 +544,12 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
                     title="Clear selection"
                     aria-label="Clear selection"
                     onClick={clearSelection}
-                    className="grid size-6 shrink-0 place-items-center rounded-full text-[#cfcfcf] hover:bg-[#1a1a1a] hover:text-white"
+                    className="text-muted-foreground hover:bg-accent hover:text-foreground ks-transition grid size-5 shrink-0 place-items-center"
                   >
-                    <X className="size-4" strokeWidth={1.5} />
+                    <IconX size={14} stroke={1.75} />
                   </button>
                 )}
-                <p className="line-clamp-2 text-[13px] leading-6 text-[#9a9a9a]">
+                <p className="text-muted-foreground line-clamp-1 text-[12px]">
                   {selectedPaths.length > 0
                     ? `${selectedPaths.length} selected`
                     : atMaster
@@ -558,9 +563,9 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
                 <button
                   type="button"
                   onClick={() => requestMove(selectedPaths)}
-                  className="inline-flex h-10 items-center gap-2 rounded-full px-4 text-[13px] font-medium whitespace-nowrap text-[#cde8df] hover:bg-[#1a1a1a]"
+                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground ks-transition inline-flex h-8 items-center gap-1.5 px-2 text-[12px] font-medium whitespace-nowrap"
                 >
-                  <FolderInput className="size-4" strokeWidth={1.5} />
+                  <IconFolderSymlink size={14} stroke={1.75} />
                   Move
                 </button>
               )}
@@ -568,9 +573,9 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
                 <button
                   type="button"
                   onClick={() => requestDelete(selectedPaths)}
-                  className="inline-flex h-10 items-center gap-2 rounded-full bg-[#3a1a1a] px-4 text-[13px] font-medium whitespace-nowrap text-[#f0b4b4] hover:bg-[#4a2222]"
+                  className="text-destructive hover:bg-destructive/10 ks-transition inline-flex h-8 items-center gap-1.5 px-2 text-[12px] font-medium whitespace-nowrap"
                 >
-                  <Trash2 className="size-4" strokeWidth={1.5} />
+                  <IconTrash size={14} stroke={1.75} />
                   Delete {selectedPaths.length}
                 </button>
               )}
@@ -579,12 +584,12 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
                 <button
                   type="button"
                   onClick={toggleSelectAll}
-                  className="inline-flex h-10 min-w-[116px] items-center justify-center gap-2 rounded-full px-3 text-[13px] font-medium whitespace-nowrap text-[#cfcfcf] hover:bg-[#1a1a1a]"
+                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground ks-transition inline-flex h-8 min-w-[96px] items-center justify-center gap-1.5 px-2 text-[12px] font-medium whitespace-nowrap"
                 >
                   {allSelected ? (
-                    <CheckSquare className="size-4" strokeWidth={1.5} />
+                    <IconSquareCheck size={14} stroke={1.75} />
                   ) : (
-                    <Square className="size-4" strokeWidth={1.5} />
+                    <IconSquare size={14} stroke={1.75} />
                   )}
                   {allSelected ? "Clear" : "Select all"}
                 </button>
@@ -592,46 +597,46 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
               <button
                 type="button"
                 onClick={() => setFolderModal(true)}
-                className="inline-flex h-10 items-center gap-2 rounded-full px-4 text-[13px] font-medium whitespace-nowrap text-[#cde8df] hover:bg-[#1a1a1a]"
+                className="text-muted-foreground hover:bg-accent hover:text-accent-foreground ks-transition inline-flex h-8 items-center gap-1.5 px-2 text-[12px] font-medium whitespace-nowrap"
               >
-                <FolderPlus className="size-4" strokeWidth={1.5} />
+                <IconFolderPlus size={14} stroke={1.75} />
                 {atMaster ? "New SKU" : "New folder"}
               </button>
               <button
                 type="button"
                 disabled={!canAddImages}
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex h-10 items-center gap-2 rounded-full bg-[#0e7a5c] px-5 text-[13px] font-medium whitespace-nowrap text-white hover:bg-[#10956e] disabled:cursor-not-allowed disabled:bg-[#1b3d33] disabled:text-[#6f8f84]"
+                className="bg-primary text-primary-foreground ks-transition inline-flex h-8 items-center gap-1.5 px-3 text-[12px] font-medium whitespace-nowrap hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                {busy ? <Loader2 className="size-4 animate-spin" strokeWidth={1.5} /> : <ImagePlus className="size-4" strokeWidth={1.5} />}
+                {busy ? <IconLoader2 size={14} stroke={1.75} className="animate-spin" /> : <IconPhotoPlus size={14} stroke={1.75} />}
                 Add
               </button>
             </div>
           </div>
 
           {error && (
-            <div className="mx-7 mb-3 rounded-2xl bg-[#2a1212] px-4 py-2.5 text-[13px] text-[#f0b4b4]">
+            <div className="border-destructive/30 bg-destructive/10 text-destructive mx-6 mb-3 border px-3 py-2 text-[12px]">
               {error}
             </div>
           )}
 
           {notice && (
-            <div className="mx-7 mb-3 rounded-2xl bg-[#0e7a5c]/20 px-4 py-2.5 text-[13px] text-[#cde8df]">
+            <div className="border-primary/30 bg-primary/10 text-foreground mx-6 mb-3 border px-3 py-2 text-[12px]">
               {notice}
             </div>
           )}
 
           {uploadPercent !== null && (
-            <div className="mx-7 mb-3 rounded-2xl bg-[#141414] px-4 py-2.5 ring-1 ring-[#2a2a2a]">
-              <div className="flex items-center justify-between text-[13px] text-[#cfcfcf]">
+            <div className="bg-card ring-foreground/10 mx-6 mb-3 px-3 py-2 ring-1">
+              <div className="flex items-center justify-between text-[12px]">
                 <span>
                   {uploadPercent < 100 ? "Uploading images" : "Saving images"}
                 </span>
-                <span className="tabular-nums text-[#9a9a9a]">{uploadPercent}%</span>
+                <span className="text-muted-foreground tabular-nums">{uploadPercent}%</span>
               </div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#0a0a0a]">
+              <div className="bg-muted mt-2 h-1 overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-[#0e7a5c] transition-[width] duration-200"
+                  className="bg-primary h-full transition-[width] duration-150"
                   style={{ width: `${uploadPercent}%` }}
                 />
               </div>
@@ -645,9 +650,7 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
               if ((event.target as HTMLElement).closest("[data-card]")) return;
               if (selectedPaths.length > 0 || selectionMode) clearSelection();
             }}
-            className={`h-[calc(100%-5.5rem)] overflow-auto px-7 pb-10 ${
-              dragOver ? "bg-[#0e7a5c]/10" : ""
-            }`}
+            className={`h-[calc(100%-4rem)] overflow-auto px-6 pb-6 ${dragOver ? "bg-primary/5" : ""}`}
             onDragOver={(event) => {
               // An image being dragged to a new position is not an upload.
               if (event.dataTransfer.types.includes(REORDER_MIME)) return;
@@ -674,8 +677,8 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
             }}
           >
             {loading ? (
-              <div className="flex h-64 items-center justify-center text-[#9a9a9a]">
-                <Loader2 className="size-6 animate-spin" strokeWidth={1.5} />
+              <div className="text-muted-foreground flex h-64 items-center justify-center">
+                <IconLoader2 size={20} stroke={1.75} className="animate-spin" />
               </div>
             ) : (
               <FileGrid
@@ -729,12 +732,12 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
       />
 
       {folderModal && (
-        <div className="fixed inset-0 z-40 grid place-items-center bg-black/70 p-4">
-          <div className="w-full max-w-md rounded-3xl bg-[#141414] p-7 ring-1 ring-[#2a2a2a]">
-            <h2 className="text-[18px] font-medium tracking-tight text-white">New SKU folder</h2>
-            <p className="mt-1.5 text-[13px] leading-6 text-[#9a9a9a]">
+        <div className="fixed inset-0 z-40 grid place-items-center bg-background/60 p-4 backdrop-blur-sm">
+          <div className="bg-popover ring-foreground/10 w-full max-w-sm p-4 shadow-md ring-1">
+            <h2 className="text-[14px] font-medium tracking-tight">New SKU folder</h2>
+            <p className="text-muted-foreground mt-1 text-[12px] leading-5">
               Name it after the SKU, for example{" "}
-              <span className="text-[#d0d0d0]">SKU-1044</span>. Paste a list to
+              <span className="text-foreground font-mono">SKU-1044</span>. Paste a list to
               create many at once.
             </p>
             <textarea
@@ -749,23 +752,21 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
                 }
               }}
               placeholder="SKU name, or one per line"
-              className={`mt-6 w-full resize-none bg-[#0a0a0a] px-4 py-3 text-[14px] leading-6 text-white outline-none ring-1 ring-[#2a2a2a] placeholder:text-[#6f6f6f] focus:ring-[#0e7a5c]/60 ${
-                pendingSkus.length > 1 ? "rounded-2xl" : "rounded-full"
-              }`}
+              className="border-input focus:ring-ring/50 placeholder:text-muted-foreground mt-4 w-full resize-none border bg-transparent px-2 py-1.5 font-mono text-[12px] leading-5 outline-none focus:ring-1"
             />
             {pendingSkus.length > 1 && (
-              <p className="mt-2.5 px-1 text-[12px] text-[#cde8df]">
+              <p className="text-muted-foreground mt-2 text-[12px]">
                 {pendingSkus.length} SKU folders will be created.
               </p>
             )}
-            <div className="mt-6 flex justify-end gap-2">
+            <div className="mt-4 flex justify-end gap-2">
               <button
                 type="button"
                 onClick={() => {
                   setFolderModal(false);
                   setFolderName("");
                 }}
-                className="h-10 rounded-full px-4 text-[13px] font-medium text-[#cfcfcf] hover:bg-[#1a1a1a]"
+                className="border-input hover:bg-accent ks-transition h-8 border px-3 text-[12px] font-medium"
               >
                 Cancel
               </button>
@@ -773,7 +774,7 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
                 type="button"
                 disabled={busy || pendingSkus.length === 0}
                 onClick={() => void createFolder()}
-                className="h-10 rounded-full bg-[#0e7a5c] px-5 text-[13px] font-medium text-white hover:bg-[#10956e] disabled:bg-[#1b3d33] disabled:text-[#6f8f84]"
+                className="bg-primary text-primary-foreground ks-transition h-8 px-3 text-[12px] font-medium hover:opacity-90 disabled:opacity-40"
               >
                 Create
               </button>
@@ -783,25 +784,25 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
       )}
 
       {moveTargets && (
-        <div className="fixed inset-0 z-40 grid place-items-center bg-black/70 p-4">
-          <div className="w-full max-w-md rounded-3xl bg-[#141414] p-7 ring-1 ring-[#2a2a2a]">
-            <h2 className="text-[18px] font-medium tracking-tight text-white">
+        <div className="fixed inset-0 z-40 grid place-items-center bg-background/60 p-4 backdrop-blur-sm">
+          <div className="bg-popover ring-foreground/10 w-full max-w-sm p-4 shadow-md ring-1">
+            <h2 className="text-[14px] font-medium tracking-tight">
               Move {moveTargets.paths.length === 1
                 ? moveTargets.label ?? "1 item"
                 : `${moveTargets.paths.length} items`}
             </h2>
-            <p className="mt-1.5 text-[13px] leading-6 text-[#9a9a9a]">
+            <p className="text-muted-foreground mt-1 text-[12px] leading-5">
               Pick the SKU folder to move into.
             </p>
 
-            <div className="mt-5 max-h-64 overflow-auto rounded-2xl ring-1 ring-[#2a2a2a]">
+            <div className="ring-foreground/10 mt-4 max-h-56 overflow-auto ring-1">
               <button
                 type="button"
                 disabled={busy || currentPath === ""}
                 onClick={() => void moveTo("")}
-                className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-[13px] text-[#e8e8e8] hover:bg-[#1a1a1a] disabled:text-[#5a5a5a] disabled:hover:bg-transparent"
+                className="hover:bg-accent ks-transition disabled:text-muted-foreground flex h-8 w-full items-center gap-2 px-2 text-left text-[12px] disabled:hover:bg-transparent"
               >
-                <Images className="size-4 text-[#0e7a5c]" strokeWidth={1.5} />
+                <IconPhoto size={14} stroke={1.75} className="text-muted-foreground" />
                 {masterLabel}
               </button>
               {destinations
@@ -812,19 +813,19 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
                     type="button"
                     disabled={busy || folder.path === currentPath}
                     onClick={() => void moveTo(folder.path)}
-                    className="flex w-full items-center gap-2.5 border-t border-[#1c1c1c] px-4 py-3 text-left text-[13px] text-[#e8e8e8] hover:bg-[#1a1a1a] disabled:text-[#5a5a5a] disabled:hover:bg-transparent"
+                    className="border-border hover:bg-accent ks-transition disabled:text-muted-foreground flex h-8 w-full items-center gap-2 border-t px-2 text-left text-[12px] disabled:hover:bg-transparent"
                   >
-                    <Folder className="size-4 text-[#e85d04]" strokeWidth={1.5} />
+                    <IconFolder size={14} stroke={1.75} className="text-muted-foreground" />
                     {folder.name}
                   </button>
                 ))}
             </div>
 
-            <div className="mt-6 flex justify-end">
+            <div className="mt-4 flex justify-end">
               <button
                 type="button"
                 onClick={() => setMoveTargets(null)}
-                className="h-10 rounded-full px-4 text-[13px] font-medium text-[#cfcfcf] hover:bg-[#1a1a1a]"
+                className="border-input hover:bg-accent ks-transition h-8 border px-3 text-[12px] font-medium"
               >
                 Cancel
               </button>
@@ -834,21 +835,21 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
       )}
 
       {pendingDelete && (
-        <div className="fixed inset-0 z-40 grid place-items-center bg-black/70 p-4">
-          <div className="w-full max-w-md rounded-3xl bg-[#141414] p-7 ring-1 ring-[#2a2a2a]">
-            <h2 className="text-[18px] font-medium tracking-tight text-white">
+        <div className="fixed inset-0 z-40 grid place-items-center bg-background/60 p-4 backdrop-blur-sm">
+          <div className="bg-popover ring-foreground/10 w-full max-w-sm p-4 shadow-md ring-1">
+            <h2 className="text-[14px] font-medium tracking-tight">
               {pendingDelete.paths.length > 1
                 ? `Delete ${pendingDelete.paths.length} items?`
                 : pendingDelete.type === "folder"
                   ? "Delete this SKU folder?"
                   : "Delete this image?"}
             </h2>
-            <p className="mt-1.5 text-[13px] leading-6 text-[#9a9a9a]">
+            <p className="text-muted-foreground mt-1 text-[12px] leading-5">
               {pendingDelete.paths.length > 1 ? (
                 "Folders are removed with everything inside them. This cannot be undone."
               ) : (
                 <>
-                  <span className="text-[#d0d0d0]">
+                  <span className="text-foreground font-mono">
                     {pendingDelete.label ?? pendingDelete.paths[0]}
                   </span>
                   {pendingDelete.type === "folder"
@@ -858,12 +859,12 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
                 </>
               )}
             </p>
-            <div className="mt-6 flex justify-end gap-2">
+            <div className="mt-4 flex justify-end gap-2">
               <button
                 type="button"
                 autoFocus
                 onClick={() => setPendingDelete(null)}
-                className="h-10 rounded-full px-4 text-[13px] font-medium text-[#cfcfcf] hover:bg-[#1a1a1a]"
+                className="border-input hover:bg-accent ks-transition h-8 border px-3 text-[12px] font-medium"
               >
                 Cancel
               </button>
@@ -871,12 +872,12 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
                 type="button"
                 disabled={busy}
                 onClick={() => void confirmDelete()}
-                className="inline-flex h-10 items-center gap-2 rounded-full bg-[#3a1a1a] px-5 text-[13px] font-medium text-[#f0b4b4] hover:bg-[#4a2222] disabled:text-[#8a6a6a]"
+                className="bg-destructive ks-transition inline-flex h-8 items-center gap-1.5 px-3 text-[12px] font-medium text-white hover:opacity-90 disabled:opacity-40"
               >
                 {busy ? (
-                  <Loader2 className="size-4 animate-spin" strokeWidth={1.5} />
+                  <IconLoader2 size={14} stroke={1.75} className="animate-spin" />
                 ) : (
-                  <Trash2 className="size-4" strokeWidth={1.5} />
+                  <IconTrash size={14} stroke={1.75} />
                 )}
                 Delete
               </button>
@@ -886,10 +887,10 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
       )}
 
       {renameItem && (
-        <div className="fixed inset-0 z-40 grid place-items-center bg-black/70 p-4">
-          <div className="w-full max-w-md rounded-3xl bg-[#141414] p-7 ring-1 ring-[#2a2a2a]">
-            <h2 className="text-[18px] font-medium tracking-tight text-white">Rename</h2>
-            <p className="mt-1.5 text-[13px] leading-6 text-[#9a9a9a]">
+        <div className="fixed inset-0 z-40 grid place-items-center bg-background/60 p-4 backdrop-blur-sm">
+          <div className="bg-popover ring-foreground/10 w-full max-w-sm p-4 shadow-md ring-1">
+            <h2 className="text-[14px] font-medium tracking-tight">Rename</h2>
+            <p className="text-muted-foreground mt-1 text-[12px] leading-5">
               {renameItem.type === "file"
                 ? "File extension is kept automatically."
                 : "This will rename the SKU folder."}
@@ -901,16 +902,16 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
               onKeyDown={(event) => {
                 if (event.key === "Enter") void renameCurrent();
               }}
-              className="mt-6 h-11 w-full rounded-full bg-[#0a0a0a] px-4 text-[14px] text-white outline-none ring-1 ring-[#2a2a2a] placeholder:text-[#6f6f6f] focus:ring-[#0e7a5c]/60"
+              className="border-input focus:ring-ring/50 placeholder:text-muted-foreground mt-4 h-8 w-full border bg-transparent px-2 font-mono text-[12px] outline-none focus:ring-1"
             />
-            <div className="mt-6 flex justify-end gap-2">
+            <div className="mt-4 flex justify-end gap-2">
               <button
                 type="button"
                 onClick={() => {
                   setRenameItem(null);
                   setRenameValue("");
                 }}
-                className="h-10 rounded-full px-4 text-[13px] font-medium text-[#cfcfcf] hover:bg-[#1a1a1a]"
+                className="border-input hover:bg-accent ks-transition h-8 border px-3 text-[12px] font-medium"
               >
                 Cancel
               </button>
@@ -918,7 +919,7 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
                 type="button"
                 disabled={busy || !renameValue.trim()}
                 onClick={() => void renameCurrent()}
-                className="h-10 rounded-full bg-[#0e7a5c] px-5 text-[13px] font-medium text-white hover:bg-[#10956e] disabled:bg-[#1b3d33] disabled:text-[#6f8f84]"
+                className="bg-primary text-primary-foreground ks-transition h-8 px-3 text-[12px] font-medium hover:opacity-90 disabled:opacity-40"
               >
                 Save
               </button>
@@ -928,15 +929,15 @@ export function DriveApp({ masterLabel, user }: DriveAppProps) {
       )}
 
       {preview && (
-        <div className="fixed inset-0 z-40 flex flex-col bg-[#0a0a0a]/95">
-          <div className="flex h-14 items-center justify-between px-5 text-white">
-            <p className="truncate text-[14px]">{preview.name}</p>
+        <div className="bg-background/95 fixed inset-0 z-40 flex flex-col backdrop-blur-sm">
+          <div className="border-border flex h-14 shrink-0 items-center justify-between border-b px-4">
+            <p className="truncate font-mono text-[12px]">{preview.name}</p>
             <button
               type="button"
               onClick={() => setPreview(null)}
-              className="grid size-10 place-items-center rounded-full hover:bg-white/[0.06]"
+              className="text-muted-foreground hover:bg-accent hover:text-foreground ks-transition grid size-8 place-items-center"
             >
-              <X className="size-5" strokeWidth={1.5} />
+              <IconX size={16} stroke={1.75} />
             </button>
           </div>
           <div className="flex min-h-0 flex-1 items-center justify-center p-6">

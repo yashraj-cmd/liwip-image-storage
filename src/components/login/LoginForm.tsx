@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { signIn } from "next-auth/react";
-import { ArrowLeft, Loader2, Mail } from "lucide-react";
+import { IconArrowLeft, IconLoader2, IconMail } from "@tabler/icons-react";
 
 export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
   const [step, setStep] = useState<"email" | "code">("email");
@@ -84,7 +84,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
       >
         <label
           htmlFor="email"
-          className="block text-[11px] font-medium tracking-[0.14em] text-[#6f6f6f] uppercase"
+          className="text-muted-foreground block text-[10px] font-medium tracking-[0.18em] uppercase"
         >
           Work email
         </label>
@@ -97,7 +97,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@keystonecommerce.in"
-          className="mt-2.5 h-11 w-full rounded-full bg-[#0a0a0a] px-4 text-[14px] text-white ring-1 ring-[#2a2a2a] outline-none placeholder:text-[#6f6f6f] focus:ring-[#0e7a5c]/60"
+          className="border-input focus:ring-ring/50 placeholder:text-muted-foreground mt-1.5 h-8 w-full border bg-transparent px-2 text-[12px] outline-none focus:ring-1"
         />
 
         {error && <Banner tone="error">{error}</Banner>}
@@ -105,12 +105,12 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
         <button
           type="submit"
           disabled={busy || !email.trim()}
-          className="mt-6 inline-flex h-11 w-full items-center justify-center gap-2.5 rounded-full bg-[#0e7a5c] text-[14px] font-medium text-white hover:bg-[#10956e] disabled:bg-[#1b3d33] disabled:text-[#6f8f84]"
+          className="bg-primary text-primary-foreground ks-transition mt-4 inline-flex h-8 w-full items-center justify-center gap-1.5 text-[12px] font-medium hover:opacity-90 disabled:opacity-40"
         >
           {busy ? (
-            <Loader2 className="size-4 animate-spin" strokeWidth={1.5} />
+            <IconLoader2 size={14} stroke={1.75} className="animate-spin" />
           ) : (
-            <Mail className="size-4" strokeWidth={1.5} />
+            <IconMail size={14} stroke={1.75} />
           )}
           Email me a code
         </button>
@@ -127,7 +127,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
     >
       <label
         htmlFor="code"
-        className="block text-[11px] font-medium tracking-[0.14em] text-[#6f6f6f] uppercase"
+        className="text-muted-foreground block text-[10px] font-medium tracking-[0.18em] uppercase"
       >
         Six digit code
       </label>
@@ -144,11 +144,11 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
           setError(null);
         }}
         placeholder="000000"
-        className="mt-2.5 h-11 w-full rounded-full bg-[#0a0a0a] px-4 text-center text-[20px] tracking-[0.4em] text-white ring-1 ring-[#2a2a2a] outline-none placeholder:text-[#3a3a3a] focus:ring-[#0e7a5c]/60"
+        className="border-input focus:ring-ring/50 placeholder:text-muted-foreground mt-1.5 h-10 w-full border bg-transparent text-center font-mono text-[16px] tracking-[0.4em] outline-none focus:ring-1"
       />
 
-      <p className="mt-3 px-1 text-[12px] leading-5 text-[#9a9a9a]">
-        Sent to <span className="text-[#d0d0d0]">{email.trim().toLowerCase()}</span>
+      <p className="text-muted-foreground mt-2 text-[12px]">
+        Sent to <span className="text-foreground font-mono">{email.trim().toLowerCase()}</span>
       </p>
 
       {error && <Banner tone="error">{error}</Banner>}
@@ -157,13 +157,13 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
       <button
         type="submit"
         disabled={busy || code.length !== 6}
-        className="mt-6 inline-flex h-11 w-full items-center justify-center gap-2.5 rounded-full bg-[#0e7a5c] text-[14px] font-medium text-white hover:bg-[#10956e] disabled:bg-[#1b3d33] disabled:text-[#6f8f84]"
+        className="bg-primary text-primary-foreground ks-transition mt-4 inline-flex h-8 w-full items-center justify-center gap-1.5 text-[12px] font-medium hover:opacity-90 disabled:opacity-40"
       >
-        {busy && <Loader2 className="size-4 animate-spin" strokeWidth={1.5} />}
+        {busy && <IconLoader2 size={14} stroke={1.75} className="animate-spin" />}
         Sign in
       </button>
 
-      <div className="mt-4 flex items-center justify-between">
+      <div className="mt-3 flex items-center justify-between">
         <button
           type="button"
           onClick={() => {
@@ -172,16 +172,16 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
             setError(null);
             setNotice(null);
           }}
-          className="inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-[13px] text-[#cfcfcf] hover:bg-[#1a1a1a]"
+          className="text-muted-foreground hover:bg-accent hover:text-foreground ks-transition inline-flex h-7 items-center gap-1.5 px-2 text-[12px]"
         >
-          <ArrowLeft className="size-3.5" strokeWidth={1.5} />
+          <IconArrowLeft size={12} stroke={1.75} />
           Change email
         </button>
         <button
           type="button"
           disabled={busy || secondsLeft > 0}
           onClick={() => void requestCode(true)}
-          className="h-9 rounded-full px-3 text-[13px] text-[#cde8df] hover:bg-[#1a1a1a] disabled:text-[#5a5a5a] disabled:hover:bg-transparent"
+          className="text-muted-foreground hover:bg-accent hover:text-foreground ks-transition h-7 px-2 text-[12px] disabled:opacity-40 disabled:hover:bg-transparent"
         >
           {secondsLeft > 0 ? `Resend in ${secondsLeft}s` : "Resend code"}
         </button>
@@ -193,8 +193,10 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
 function Banner({ tone, children }: { tone: "error" | "ok"; children: React.ReactNode }) {
   return (
     <div
-      className={`mt-5 rounded-2xl px-4 py-2.5 text-[13px] leading-6 ${
-        tone === "error" ? "bg-[#2a1212] text-[#f0b4b4]" : "bg-[#0e7a5c]/20 text-[#cde8df]"
+      className={`mt-3 border px-3 py-2 text-[12px] leading-5 ${
+        tone === "error"
+          ? "border-destructive/30 bg-destructive/10 text-destructive"
+          : "border-primary/30 bg-primary/10 text-foreground"
       }`}
     >
       {children}
